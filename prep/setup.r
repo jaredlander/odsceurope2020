@@ -17,7 +17,3 @@ install.packages(c(
 
 # download all data
 piggyback::pb_download(repo='jaredlander/coursedata')
-
-# install extra packages
-
-install.packages(c('prophet', 'fable.prophet'))
