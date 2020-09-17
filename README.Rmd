@@ -2,7 +2,7 @@
 output: github_document
 params:
     className: "Machine Learning in R Parts I & II"
-    repoName: "odscvirtual2020"
+    repoName: "odsceurope2020"
     repoOwner: "jaredlander"
     organizer: "[ODSC](https://www.odsc.com/)"
     packages: !r c('here', 'knitr', 'rmarkdown', 'tidyverse', 'usethis')

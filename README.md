@@ -54,10 +54,10 @@ This assumes you have `git`
 Run this command in the command line or shell.\[2\]
 
 ``` sh
-git clone https://github.com/jaredlander/odscvirtual2020.git
+git clone https://github.com/jaredlander/odsceurope2020.git
 ```
 
-Then open the `odscvirtual2020.Rproj` file.
+Then open the `odsceurope2020.Rproj` file.
 
 ## RStudio Gui
 
@@ -78,7 +78,7 @@ Click `Git`.
 
 Choose a folder in the `Create project as a subdirectory of` field.
 
-Paste `https://github.com/jaredlander/odscvirtual2020`\[3\] in the
+Paste `https://github.com/jaredlander/odsceurope2020`\[3\] in the
 `Repository URL` field.
 
 <img src="images/rstudio-create-project-git.png" width="536" />
@@ -92,7 +92,7 @@ Run these commands in the R console.
 install.packages('usethis')
 
 # get the repo
-newProject <- usethis::use_course('https://github.com/jaredlander/odscvirtual2020/archive/master.zip')
+newProject <- usethis::use_course('https://github.com/jaredlander/odsceurope2020/archive/master.zip')
 ```
 
 Be sure to select the positive prompts such as `yes`, `yeah`, etc.
@@ -100,8 +100,8 @@ Be sure to select the positive prompts such as `yes`, `yeah`, etc.
 This will open the project in a new RStudio window.
 
 After any of these methods you should have a new RStudio project called
-`odscvirtual2020` or `odscvirtual2020-master`. You can see this in the
-top right of RStudio (the name in the image may be different).
+`odsceurope2020` or `odsceurope2020-master`. You can see this in the top
+right of RStudio (the name in the image may be different).
 
 <img src="images/ProjectCorner.png" width="225" />
 
@@ -134,10 +134,10 @@ for access to the class project.\[5\]
 
 1.  Can also be done with ssh instead of https.
 
-2.  Or git clone <git@github.com>:jaredlander/odscvirtual2020.git for
+2.  Or git clone <git@github.com>:jaredlander/odsceurope2020.git for
     ssh.
 
-3.  Or <git@github.com>:jaredlander/odscvirtual2020.git for ssh.
+3.  Or <git@github.com>:jaredlander/odsceurope2020.git for ssh.
 
 4.  Linux users might need to install `libxml2-dev` and `zlib1g-dev`
 
