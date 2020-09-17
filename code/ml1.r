@@ -127,3 +127,19 @@ coefplot(mod3, sort='magnitude', lambda=mod3$lambda.min)
 coefplot(mod3, sort='magnitude', lambda='lambda.min')
 mod3$lambda.1se
 coefplot(mod3, sort='magnitude', lambda='lambda.1se')
+coefpath(mod3)
+
+# ridge ####
+
+mod4 <- cv.glmnet(x=comp_x, y=comp_y, family='gaussian', nfolds=10, alpha=0)
+coefpath(mod4)
+mod4$lambda
+coefplot(mod4, sort='magnitude', intercept=FALSE, lambda=50000000)
+coefplot(mod4, sort='magnitude', intercept=FALSE, lambda=5000000)
+coefplot(mod4, sort='magnitude', intercept=FALSE, lambda=500000)
+coefplot(mod4, sort='magnitude', intercept=FALSE, lambda=50000)
+coefplot(mod4, sort='magnitude', intercept=FALSE, lambda=5000)
+plot(mod4)
+
+# lasso is better for variable selection
+# ridge is better for many correlated inputs
