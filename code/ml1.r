@@ -75,7 +75,7 @@ library(recipes)
 
 # we need to build a matrix of inputs and a matrix for the output
 # do that we'll use {recipes}
-# biggest thing we need to do is create dummy variables for the categroical inputs
+# biggest thing we need to do is create dummy variables for the categorical inputs
 
 rec1 <- recipe(SalaryCY ~ Region + Title + Years + Reports + Review + Sector + Level + Career + Office + Floor + Retirement, data=comp) %>% 
     step_dummy(all_nominal(), one_hot=TRUE)
@@ -97,3 +97,33 @@ lobstr::obj_size(comp_x)
 
 comp_y <- juice(prep1, all_outcomes(), composition='matrix')
 head(comp_y)
+
+mod2 <- glmnet(x=comp_x, y=comp_y, family='gaussian')
+mod2
+plot(mod2, xvar='lambda')
+View(as.matrix(coef(mod2)))
+plot(mod2, xvar='lambda', label=TRUE)
+coefpath(mod2)
+
+mod2$lambda
+coefplot(mod2, sort='magnitude', lambda=500000)
+coefplot(mod2, sort='magnitude', lambda=50000)
+coefplot(mod2, sort='magnitude', lambda=5000)
+coefplot(mod2, sort='magnitude', lambda=500)
+coefplot(mod2, sort='magnitude', lambda=50)
+coefplot(mod2, sort='magnitude', lambda=5)
+
+library(patchwork)
+coefplot(mod2, sort='magnitude', lambda=50000, intercept=FALSE) / 
+    coefplot(mod2, sort='magnitude', lambda=5000, intercept=FALSE) / 
+    coefplot(mod2, sort='magnitude', lambda=500, intercept=FALSE)
+
+mod2 <- glmnet(x=comp_x, y=comp_y, family='gaussian', alpha=1)
+
+mod3 <- cv.glmnet(x=comp_x, y=comp_y, family='gaussian', alpha=1, nfolds=10)
+plot(mod3)
+mod3$lambda.min
+coefplot(mod3, sort='magnitude', lambda=mod3$lambda.min)
+coefplot(mod3, sort='magnitude', lambda='lambda.min')
+mod3$lambda.1se
+coefplot(mod3, sort='magnitude', lambda='lambda.1se')
