@@ -143,3 +143,25 @@ plot(mod4)
 
 # lasso is better for variable selection
 # ridge is better for many correlated inputs
+
+mod5 <- cv.glmnet(x=comp_x, y=comp_y, family='gaussian', nfolds=10, alpha=0.5)
+coefpath(mod5)
+plot(mod5)
+mod6 <- cv.glmnet(x=comp_x, y=comp_y, family='gaussian', nfolds=10, alpha=0.8)
+mod7 <- cv.glmnet(x=comp_x, y=comp_y, family='gaussian', nfolds=10, alpha=0.2)
+
+find_error <- function(model)
+{
+    model$cvm[model$lambda == model$lambda.1se]
+}
+
+tibble::tibble(Mod=3:7, Error=c(find_error(mod3)
+, find_error(mod4)
+, find_error(mod5)
+, find_error(mod6)
+, find_error(mod7))
+) %>% ggplot(aes(x=Mod, y=Error)) + geom_col()
+
+# cv.glmnet cross-validates lambda, not alpha
+# to cross-validate alpha, either build your own (page 336 of R For Everyone Second Edition) or use {rsample}/{tune} (learn ODSC West)
+
