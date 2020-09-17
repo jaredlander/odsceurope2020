@@ -51,7 +51,7 @@ model.matrix( ~ colors)
 # terminology ####
 
 # outcome: response, target, label, y, dependent variable (don't use this term)
-# inputs: predictors, features, variables, covariates, data (don't use this), independent variabels (don't use)
+# inputs: predictors, features, variables, covariates, data (don't use this), independent variables (don't use)
 # intercept: bias (don't use this), consider as just another coefficient
 # coefficients: weights
 
@@ -60,4 +60,40 @@ model.matrix( ~ colors)
 # MAE
 # R^2 (don't use this)
 
+# glmnet ####
 
+library(glmnet)
+library(recipes)
+
+# glmnet (pronounced glim-net, not g-l-m-net) is THE package for fitting elastic nets
+# elastic net is a combination of L2-ridge regression and L1-lasso regression
+
+# lm: formula, data.frame
+# glmnet: x and y matrices
+
+# can't glmnet(SalaryCY ~ Reports + Title, data=comp)
+
+# we need to build a matrix of inputs and a matrix for the output
+# do that we'll use {recipes}
+# biggest thing we need to do is create dummy variables for the categroical inputs
+
+rec1 <- recipe(SalaryCY ~ Region + Title + Years + Reports + Review + Sector + Level + Career + Office + Floor + Retirement, data=comp) %>% 
+    step_dummy(all_nominal(), one_hot=TRUE)
+rec1
+prep1 <- prep(rec1)
+prep1
+
+juice(prep1)
+
+dense_x <- juice(prep1, all_predictors(), composition='matrix')
+head(dense_x)
+lobstr::obj_size(dense_x)
+
+comp_x <- juice(prep1, all_predictors(), composition='dgCMatrix')
+comp_x
+lobstr::obj_size(comp_x)
+
+# sparse matrices take up less memory and can be computed on faster
+
+comp_y <- juice(prep1, all_outcomes(), composition='matrix')
+head(comp_y)
