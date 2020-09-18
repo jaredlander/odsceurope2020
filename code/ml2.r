@@ -165,3 +165,173 @@ credit_val_x <- bake(prep3, new_data=credit_val, all_predictors(), composition='
 credit_val_y <- bake(prep3, new_data=credit_val, all_outcomes(), composition='matrix')
 
 credit_val_xg <- xgb.DMatrix(data=credit_val_x, label=credit_val_y)
+
+tree5 <- xgb.train(
+    data=credit_xg,
+    objective='binary:logistic',
+    nrounds=500,
+    eval_metric='logloss',
+    watchlist=list(train=credit_xg),
+    print_every_n=10
+)
+
+tree6 <- xgb.train(
+    data=credit_xg,
+    objective='binary:logistic',
+    nrounds=500,
+    eval_metric='logloss',
+    watchlist=list(train=credit_xg, validate=credit_val_xg),
+    print_every_n=10
+)
+
+library(dygraphs)
+
+dygraph(tree6$evaluation_log)
+
+
+tree7 <- xgb.train(
+    data=credit_xg,
+    objective='binary:logistic',
+    nrounds=200,
+    eval_metric='logloss',
+    watchlist=list(train=credit_xg, validate=credit_val_xg),
+    print_every_n=10,
+    max_depth=3
+)
+min(tree7$evaluation_log$validate_logloss)
+min(tree6$evaluation_log$validate_logloss)
+
+tree8 <- xgb.train(
+    data=credit_xg,
+    objective='binary:logistic',
+    nrounds=200,
+    eval_metric='logloss',
+    watchlist=list(train=credit_xg, validate=credit_val_xg),
+    print_every_n=10,
+    max_depth=10
+)
+min(tree8$evaluation_log$validate_logloss)
+
+tree9 <- xgb.train(
+    data=credit_xg,
+    objective='binary:logistic',
+    nrounds=200,
+    eval_metric='logloss',
+    watchlist=list(train=credit_xg, validate=credit_val_xg),
+    print_every_n=10,
+    max_depth=2
+)
+min(tree9$evaluation_log$validate_logloss)
+
+tree10 <- xgb.train(
+    data=credit_xg,
+    objective='binary:logistic',
+    nrounds=200,
+    eval_metric='logloss',
+    watchlist=list(train=credit_xg, validate=credit_val_xg),
+    print_every_n=10,
+    max_depth=2,
+    eta=0.2
+)
+min(tree10$evaluation_log$validate_logloss)
+
+tree11 <- xgb.train(
+    data=credit_xg,
+    objective='binary:logistic',
+    nrounds=200,
+    eval_metric='logloss',
+    watchlist=list(train=credit_xg, validate=credit_val_xg),
+    print_every_n=10,
+    max_depth=2,
+    eta=0.45
+)
+min(tree11$evaluation_log$validate_logloss)
+
+tree12 <- xgb.train(
+    data=credit_xg,
+    objective='binary:logistic',
+    nrounds=200,
+    eval_metric='logloss',
+    watchlist=list(train=credit_xg, validate=credit_val_xg),
+    print_every_n=10,
+    max_depth=2,
+    eta=0.45,
+    early_stopping_rounds=30
+)
+dygraph(tree12$evaluation_log)
+
+
+tree13 <- xgb.train(
+    data=credit_xg,
+    objective='binary:logistic',
+    nrounds=200,
+    eval_metric='logloss',
+    watchlist=list(train=credit_xg, validate=credit_val_xg),
+    print_every_n=10,
+    max_depth=2,
+    eta=0.45,
+    early_stopping_rounds=30,
+    subsample=0.7
+)
+
+tree14 <- xgb.train(
+    data=credit_xg,
+    objective='binary:logistic',
+    nrounds=200,
+    eval_metric='logloss',
+    watchlist=list(train=credit_xg, validate=credit_val_xg),
+    print_every_n=10,
+    max_depth=2,
+    eta=0.45,
+    early_stopping_rounds=30,
+    subsample=0.7,
+    colsample_bytree=0.5
+)
+
+tree15 <- xgb.train(
+    data=credit_xg,
+    objective='binary:logistic',
+    nrounds=1,
+    eval_metric='logloss',
+    watchlist=list(train=credit_xg, validate=credit_val_xg),
+    print_every_n=10,
+    max_depth=2,
+    eta=0.45,
+    early_stopping_rounds=30,
+    subsample=0.5,
+    colsample_bytree=0.5,
+    num_parallel_tree=200
+)
+# pseudo random forest
+
+tree16 <- xgb.train(
+    data=credit_xg,
+    objective='binary:logistic',
+    nrounds=100,
+    eval_metric='logloss',
+    watchlist=list(train=credit_xg, validate=credit_val_xg),
+    print_every_n=10,
+    max_depth=2,
+    eta=0.45,
+    early_stopping_rounds=30,
+    subsample=0.5,
+    colsample_bytree=0.5,
+    num_parallel_tree=50
+)
+# boosted pseudo random forest
+
+tree17 <- xgb.train(
+    data=credit_xg,
+    objective='binary:logistic',
+    nrounds=100,
+    eval_metric='logloss',
+    watchlist=list(train=credit_xg, validate=credit_val_xg),
+    print_every_n=10,
+    max_depth=2,
+    eta=0.45,
+    early_stopping_rounds=30,
+    subsample=0.5,
+    colsample_bytree=0.5,
+    num_parallel_tree=100
+)
+# boosted pseudo random forest
