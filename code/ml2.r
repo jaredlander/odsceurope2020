@@ -98,3 +98,70 @@ xgb.plot.multi.trees(tree1)
 # common problem: overfitting, unstable, high variance
 
 # two solutions: random forest, boosted tree
+
+tree2 <- xgb.train(
+    data=credit_xg,
+    objective='binary:logistic',
+    nrounds=100
+)
+tree2
+xgb.plot.multi.trees(tree2)
+
+library(vip)
+vip(tree2, num_features=15)
+
+
+tree3 <- xgb.train(
+    data=credit_xg,
+    objective='binary:logistic',
+    nrounds=100,
+    eval_metric='logloss',
+    watchlist=list(train=credit_xg),
+    print_every_n=10
+)
+
+tree4 <- xgb.train(
+    data=credit_xg,
+    objective='binary:logistic',
+    nrounds=200,
+    eval_metric='logloss',
+    watchlist=list(train=credit_xg),
+    print_every_n=10
+)
+
+tree5 <- xgb.train(
+    data=credit_xg,
+    objective='binary:logistic',
+    nrounds=500,
+    eval_metric='logloss',
+    watchlist=list(train=credit_xg),
+    print_every_n=10
+)
+
+library(rsample)
+
+credit_split <- initial_split(credit_data, prop=0.8, strata='Status')
+credit_split
+credit_train <- training(credit_split)
+credit_val <- testing(credit_split)
+credit_train %>% as_tibble()
+credit_val %>% as_tibble()
+
+
+rec3 <- recipe(Status ~ ., data=credit_train) %>% 
+    themis::step_downsample(Status, under_ratio=1.15) %>% 
+    step_integer(Status, zero_based=TRUE) %>% 
+    step_nzv(all_predictors()) %>% 
+    step_other(all_nominal(), other='misc') %>% 
+    step_dummy(all_nominal(), one_hot=TRUE)
+prep3 <- prep(rec3)
+
+credit_x <- juice(prep3, all_predictors(), composition='dgCMatrix')
+credit_y <- juice(prep3, all_outcomes(), composition='matrix')
+
+credit_xg <- xgb.DMatrix(data=credit_x, label=credit_y)
+
+credit_val_x <- bake(prep3, new_data=credit_val, all_predictors(), composition='dgCMatrix')
+credit_val_y <- bake(prep3, new_data=credit_val, all_outcomes(), composition='matrix')
+
+credit_val_xg <- xgb.DMatrix(data=credit_val_x, label=credit_val_y)
