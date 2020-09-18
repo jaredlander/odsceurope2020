@@ -335,3 +335,42 @@ tree17 <- xgb.train(
     num_parallel_tree=100
 )
 # boosted pseudo random forest
+?xgb.train
+
+credit_val_x
+
+preds14 <- predict(tree14, newdata=credit_val_x)
+preds14 %>% head
+credit_val_y %>% head
+
+logloss <- function(truth, predicted)
+{
+    mean(-(truth*log(predicted) + (1 - truth)*log(1 - predicted)))
+}
+
+logloss(credit_val_y, preds14)
+
+rec4 <- recipe(Status ~ ., data=credit_train) %>% 
+    themis::step_downsample(Status) %>% 
+    step_nzv(all_predictors()) %>% 
+    step_normalize(all_numeric()) %>% 
+    step_integer(Status, zero_based=TRUE) %>% 
+    step_other(all_nominal(), other='misc') %>% 
+    step_dummy(all_nominal(), one_hot=TRUE) %>% 
+    step_intercept()
+prep4 <- prep(rec4)
+
+reg_x <- juice(prep4, all_predictors(), composition='dgCMatrix')
+reg_y <- juice(prep4, all_outcomes(), composition='matrix')
+
+reg_xg <- xgb.DMatrix(data=reg_x, label=reg_y)
+
+reg1 <- xgb.train(
+    data=reg_xg,
+    booster='gblinear',
+    objective='reg:logistic',
+    nrounds=100,
+    watchlist=list(train=reg_xg),
+    print_every_n=10,
+    alpha=.005
+)
