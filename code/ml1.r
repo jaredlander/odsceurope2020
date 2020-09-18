@@ -165,3 +165,21 @@ tibble::tibble(Mod=3:7, Error=c(find_error(mod3)
 # cv.glmnet cross-validates lambda, not alpha
 # to cross-validate alpha, either build your own (page 336 of R For Everyone Second Edition) or use {rsample}/{tune} (learn ODSC West)
 
+
+# never do this
+# but since we don't have "new" data, we'll randomly sample some rows from the traing data
+# and pretend it is new
+# please don't ever do this
+
+fake_new_data <- dplyr::slice_sample(comp, n=10)
+fake_new_data
+fake_new_x <- bake(prep1, new_data=fake_new_data, all_predictors(), composition='dgCMatrix')
+
+preds6 <- predict(mod6, newx=fake_new_x, s='lambda.1se')
+preds6
+
+sqrt(mean((fake_new_data$SalaryCY - preds6)^2))
+
+# @jaredlander
+# jaredlander.com
+# landeranalytics.com
